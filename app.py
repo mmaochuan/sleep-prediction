@@ -84,22 +84,18 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# 模型路径配置 - 自动检测
+# 模型路径配置
 def get_model_dir():
     """自动检测模型目录路径（优化部署兼容性）"""
-    # 优先使用相对路径（适应Streamlit Cloud）
     possible_paths = [
-        # 移除本地绝对路径，避免部署时干扰
-        os.path.join(".", "saved_models_selected_features"),  # 当前工作目录下的子文件夹
-        os.path.join(os.path.dirname(__file__), "saved_models_selected_features")  # 与app.py同级的文件夹
+        os.path.join(".", "saved_models_selected_features"),
+        os.path.join(os.path.dirname(__file__), "saved_models_selected_features")
     ]
 
     for path in possible_paths:
-        # 检查路径是否存在，且确保是目录
         if os.path.exists(path) and os.path.isdir(path):
             return path
 
-    # 路径不存在时，返回默认相对路径并提示
     default_path = os.path.join(".", "saved_models_selected_features")
     st.warning(f"模型目录未找到，将尝试使用默认路径: {default_path}")
     return default_path
@@ -107,25 +103,205 @@ def get_model_dir():
 
 MODEL_DIR = get_model_dir()
 
-# 特征标签映射
+# 特征标签映射（更新版）
 FEATURE_LABELS = {
-    'age': {'label': '年龄', 'type': 'number', 'min': 45, 'max': 120},
-    'gender': {'label': '性别', 'options': {'0': '女性', '1': '男性'}},
-    'education': {'label': '教育水平', 'options': {'1': '低于初中', '2': '高中和职业', '3': '高等教育'}},
-    'smoke': {'label': '吸烟', 'options': {'0': '否', '1': '是'}},
-    'digeste': {'label': '胃病', 'options': {'0': '否', '1': '是'}},
-    'lunge': {'label': '肺病', 'options': {'0': '否', '1': '是'}},
-    'arthre': {'label': '关节炎', 'options': {'0': '否', '1': '是'}},
-    'chronum': {'label': '慢性病数量', 'type': 'number', 'min': 0, 'max': 20},
-    'adl': {'label': 'ADL评分', 'type': 'number', 'min': 0, 'max': 6, 'desc': '日常生活活动困难项数'},
-    'iadl': {'label': 'IADL评分', 'type': 'number', 'min': 0, 'max': 6, 'desc': '工具性日常活动困难项数'},
-    'cog': {'label': '认知功能评分', 'type': 'number', 'min': 0, 'max': 21, 'desc': '分数越高认知越好'},
-    'cesd': {'label': 'CESD抑郁评分', 'type': 'number', 'min': 0, 'max': 30, 'desc': '分数越高抑郁越严重'},
-    'selfhealth': {'label': '自评健康', 'options': {'1': '很差', '2': '差', '3': '一般', '4': '好', '5': '很好'}},
-    'lonely': {'label': '孤独频率', 'options': {'1': '很少', '2': '有时', '3': '经常', '4': '总是'}},
-    'lifesat': {'label': '生活满意度',
-                'options': {'5': '极其满意', '4': '非常满意', '3': '比较满意', '2': '不太满意', '1': '一点也不满意'}},
-    'hchild': {'label': '健在子女数', 'type': 'number', 'min': 0, 'max': 20}
+    'age': {
+        'label': '年龄',
+        'type': 'number',
+        'min': 45,
+        'max': 120,
+        'step': 1,
+        'is_integer': True
+    },
+    'gender': {
+        'label': '性别',
+        'options': {'0': '女性', '1': '男性'}
+    },
+    'education': {
+        'label': '教育水平',
+        'options': {'1': '低于初中', '2': '高中和职业', '3': '高等教育'}
+    },
+    'smoke': {
+        'label': '吸烟',
+        'options': {'0': '否', '1': '是'}
+    },
+    'digeste': {
+        'label': '胃病',
+        'options': {'0': '否', '1': '是'}
+    },
+    'lunge': {
+        'label': '肺病',
+        'options': {'0': '否', '1': '是'}
+    },
+    'arthre': {
+        'label': '关节炎',
+        'options': {'0': '否', '1': '是'}
+    },
+    'chronum': {
+        'label': '多病共存数量',
+        'type': 'number',
+        'min': 0,
+        'max': 14,
+        'step': 1,
+        'is_integer': True,
+        'desc': '''**多病共存包括以下14种疾病：**
+
+1. 高血压
+2. 血脂异常
+3. 糖尿病
+4. 癌症
+5. 肺病
+6. 肝脏疾病
+7. 心脏病
+8. 中风
+9. 肾脏疾病
+10. 胃病
+11. 精神疾病
+12. 记忆疾病
+13. 关节炎
+14. 哮喘病
+
+**请输入患有上述疾病的总数量（0-14）**'''
+    },
+    'adl': {
+        'label': 'ADL评分',
+        'type': 'number',
+        'min': 0,
+        'max': 6,
+        'step': 1,
+        'is_integer': True,
+        'desc': '''**ADL（日常生活活动能力）评分说明：**
+
+ADL评估6项基本日常生活活动的困难程度：
+
+1. **穿衣**：自己穿衣服有无困难
+2. **洗澡**：自己洗澡有无困难
+3. **进食**：自己吃饭有无困难
+4. **转移**：上下床或椅子有无困难
+5. **如厕**：自己上厕所有无困难
+6. **控制大小便**：控制大小便有无困难
+
+**计分方法：**
+- 每项活动如果有困难，计1分
+- 总分范围：0-6分
+- 分数越高，表示日常生活能力越差
+
+**请输入有困难的项目数量（0-6）**'''
+    },
+    'iadl': {
+        'label': 'IADL评分',
+        'type': 'number',
+        'min': 0,
+        'max': 5,
+        'step': 1,
+        'is_integer': True,
+        'desc': '''**IADL（工具性日常生活活动能力）评分说明：**
+
+IADL评估5项工具性日常生活活动的困难程度：
+
+1. **做家务**：做家务活有无困难
+2. **做饭**：做饭有无困难
+3. **购物**：购物有无困难
+4. **管理钱财**：管理钱财有无困难
+5. **吃药**：按时吃药有无困难
+
+**计分方法：**
+- 每项活动如果有困难，计1分
+- 总分范围：0-5分
+- 分数越高，表示工具性日常活动能力越差
+
+**请输入有困难的项目数量（0-5）**'''
+    },
+    'cog': {
+        'label': '认知功能评分',
+        'type': 'number',
+        'min': 0,
+        'max': 21,
+        'step': 1,
+        'is_integer': True,
+        'desc': '''**CHARLS认知功能评分说明：**
+
+认知功能总分由两部分组成，满分21分：
+
+**一、精神状态（0-11分）**
+包括：
+- 今天是几号？（年月日，各1分）
+- 今天星期几？（1分）
+- 春夏秋冬现在是什么季节？（1分）
+- 5个物品即时回忆（5分）
+- 100连减7两次（2分）
+
+**二、情景记忆（0-10分）**
+- 延迟回忆刚才的5个物品（5分）
+- 画图测试（5分）
+
+**计分方法：**
+- 精神状态分数（0-11分）+ 情景记忆分数（0-10分）
+- 总分范围：0-21分
+- **分数越高，认知功能越好**
+
+**请输入总分（0-21）**'''
+    },
+    'cesd': {
+        'label': 'CESD抑郁评分',
+        'type': 'number',
+        'min': 0,
+        'max': 30,
+        'step': 1,
+        'is_integer': True,
+        'desc': '''**CESD-10抑郁量表评分说明：**
+
+包括10个问题，每题1-4分：
+
+**1. 我因一些小事而烦恼**
+**2. 我在做事时很难集中精力**
+**3. 我感到情绪低落**
+**4. 我觉得做任何事都很费劲**
+**5. 我对未来充满希望** ⭐（反向题）
+**6. 我感到害怕**
+**7. 我的睡眠不好**
+**8. 我很愉快** ⭐（反向题）
+**9. 我感到孤独**
+**10. 我觉得我无法继续我的生活**
+
+**每题计分（过去一周的频率）：**
+- 1分 = 很少或根本没有（<1天）
+- 2分 = 不太多（1-2天）
+- 3分 = 有时或一半时间（3-4天）
+- 4分 = 大多数时间（5-7天）
+
+**注意：** 第5、8题为反向题，需反转计分：
+- 原始1分→3分，2分→2分，3分→1分，4分→0分
+
+**抑郁风险水平：**
+- 0-9分：无明显抑郁症状
+- 10-12分：轻度抑郁倾向
+- ≥13分：明显抑郁症状
+
+**分数越高，抑郁程度越严重**
+
+**请输入总分（0-30）**'''
+    },
+    'selfhealth': {
+        'label': '自评健康',
+        'options': {'1': '很差', '2': '差', '3': '一般', '4': '好', '5': '很好'}
+    },
+    'lonely': {
+        'label': '孤独频率',
+        'options': {'1': '很少', '2': '有时', '3': '经常', '4': '总是'}
+    },
+    'lifesat': {
+        'label': '生活满意度',
+        'options': {'5': '极其满意', '4': '非常满意', '3': '比较满意', '2': '不太满意', '1': '一点也不满意'}
+    },
+    'hchild': {
+        'label': '健在子女数',
+        'type': 'number',
+        'min': 0,
+        'max': 20,
+        'step': 1,
+        'is_integer': True
+    }
 }
 
 
@@ -133,7 +309,6 @@ FEATURE_LABELS = {
 def load_models():
     """加载所有必需的模型和预处理器"""
     try:
-        # 检查目录是否存在
         if not os.path.exists(MODEL_DIR):
             st.error(f"❌ 模型目录不存在: {MODEL_DIR}")
             return None, None, None, None, None
@@ -191,12 +366,10 @@ def preprocess_input(data, features_info, ordinal_encoder, scaler_cont):
         selected_categorical = features_info.get('selected_categorical', [])
         selected_continuous = features_info.get('selected_continuous', [])
 
-        # 检查缺失特征
         missing_features = [f for f in selected_features if f not in data]
         if missing_features:
             raise ValueError(f"缺少必需的特征: {', '.join(missing_features)}")
 
-        # 只提取重要特征
         important_data = {k: v for k, v in data.items() if k in selected_features}
         df = pd.DataFrame([important_data])
 
@@ -226,7 +399,6 @@ def preprocess_input(data, features_info, ordinal_encoder, scaler_cont):
         else:
             X_processed = cont_scaled
 
-        # 确保列顺序一致
         X_processed = X_processed[selected_features]
 
         return X_processed
@@ -237,12 +409,22 @@ def preprocess_input(data, features_info, ordinal_encoder, scaler_cont):
 
 
 def generate_shap_plot(shap_values, feature_values, base_value, features_info):
-    """生成SHAP瀑布图"""
+    """生成SHAP瀑布图（改进中文字体支持）"""
     try:
-        plt.rcParams['font.sans-serif'] = ['SimHei', 'Arial Unicode MS', 'DejaVu Sans']
+        # 设置中文字体（多平台兼容）
+        import platform
+        system = platform.system()
+
+        if system == 'Windows':
+            plt.rcParams['font.sans-serif'] = ['Microsoft YaHei', 'SimHei', 'Arial Unicode MS']
+        elif system == 'Darwin':  # macOS
+            plt.rcParams['font.sans-serif'] = ['Arial Unicode MS', 'PingFang SC', 'STHeiti']
+        else:  # Linux
+            plt.rcParams['font.sans-serif'] = ['WenQuanYi Micro Hei', 'Droid Sans Fallback', 'DejaVu Sans']
+
         plt.rcParams['axes.unicode_minus'] = False
 
-        fig, ax = plt.subplots(figsize=(10, 8))
+        fig, ax = plt.subplots(figsize=(12, 8))
 
         feature_names = features_info['selected_features']
         sorted_idx = np.argsort(np.abs(shap_values))[::-1]
@@ -257,7 +439,7 @@ def generate_shap_plot(shap_values, feature_values, base_value, features_info):
             'gender': '性别', 'age': '年龄', 'education': '教育程度',
             'cog': '认知功能', 'cesd': '抑郁评分', 'lonely': '孤独感',
             'selfhealth': '自评健康', 'depre': '抑郁程度', 'lifesat': '生活满意度',
-            'chronum': '慢性病数量', 'smoke': '吸烟', 'digeste': '消化疾病',
+            'chronum': '多病共存', 'smoke': '吸烟', 'digeste': '消化疾病',
             'lunge': '肺部疾病', 'arthre': '关节炎', 'hchild': '子女数量',
             'iadl': 'IADL评分', 'adl': 'ADL评分'
         }
@@ -321,7 +503,7 @@ def main():
     </div>
     """, unsafe_allow_html=True)
 
-    # 侧边栏 - 模型信息
+    # 侧边栏
     with st.sidebar:
         st.markdown("### 📊 模型信息")
         st.info(f"""
@@ -336,6 +518,8 @@ def main():
         2. 点击"开始预测"按钮
         3. 查看风险评估结果
         4. 根据建议采取预防措施
+
+        💡 **提示**：点击输入框旁的 ❓ 查看详细说明
         """)
 
     # 主要内容区域
@@ -378,30 +562,37 @@ def main():
                         options_display = [f"{options_dict[k]}" for k in options_list]
 
                         selected = st.selectbox(
-                            f"{label} ({feature})",
+                            f"{label}",
                             options=options_display,
                             key=feature
                         )
 
-                        # 找到对应的值
                         selected_idx = options_display.index(selected)
                         input_data[feature] = float(options_list[selected_idx])
                     else:
                         min_val = label_info.get('min', 0)
                         max_val = label_info.get('max', 100)
+                        step = label_info.get('step', 1 if label_info.get('is_integer', False) else 0.1)
                         desc = label_info.get('desc', '')
 
                         help_text = desc if desc else None
 
-                        input_data[feature] = st.number_input(
-                            f"{label} ({feature})",
+                        value = st.number_input(
+                            f"{label}",
                             min_value=float(min_val),
                             max_value=float(max_val),
                             value=float(min_val),
-                            step=0.1,
+                            step=float(step),
                             help=help_text,
-                            key=feature
+                            key=feature,
+                            format="%d" if label_info.get('is_integer', False) else "%.1f"
                         )
+
+                        # 确保整数类型
+                        if label_info.get('is_integer', False):
+                            input_data[feature] = int(value)
+                        else:
+                            input_data[feature] = float(value)
 
         # 提交按钮
         submitted = st.form_submit_button("🔮 开始预测", use_container_width=True)
@@ -498,10 +689,10 @@ def main():
 
                     if fig:
                         st.pyplot(fig)
-                        st.caption("SHAP值显示每个特征对睡眠质量风险预测的贡献。红色表示增加风险，蓝色表示降低风险。")
+                        st.caption("📌 SHAP值显示每个特征对睡眠质量风险预测的贡献。红色表示增加风险，蓝色表示降低风险。")
 
                 except Exception as e:
-                    st.warning(f"特征影响分析生成失败: {str(e)}")
+                    st.warning(f"⚠️ 特征影响分析生成失败: {str(e)}")
 
                 # 预测详情
                 with st.expander("📋 查看预测详情"):
