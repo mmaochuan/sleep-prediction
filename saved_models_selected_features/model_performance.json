@@ -1,0 +1,12 @@
+{
+    "model_name": "LGB",
+    "external_validation_auc": 0.6411425467337161,
+    "selected_features_count": 15,
+    "lasso_lambda_min": 24.420530945486522,
+    "lasso_C": 0.040949150623804234,
+    "cv_auc": 0.6269228177971812,
+    "training_samples": 2429,
+    "validation_samples": 1042,
+    "external_samples": 1344,
+    "timestamp": "2025-10-20 12:31:29"
+}

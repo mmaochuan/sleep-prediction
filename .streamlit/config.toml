@@ -1,0 +1,14 @@
+[theme]
+primaryColor = "#667eea"           # 主题色（紫色）
+backgroundColor = "#ffffff"         # 背景色
+secondaryBackgroundColor = "#f0f2f6"  # 次背景色
+textColor = "#262730"              # 文字颜色
+font = "sans serif"                # 字体
+
+[server]
+port = 8501                        # 端口号
+enableCORS = false                 # 跨域
+maxUploadSize = 200                # 最大上传200MB
+
+[browser]
+gatherUsageStats = false           # 不收集统计
