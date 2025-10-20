@@ -86,20 +86,23 @@ st.markdown("""
 
 # 模型路径配置 - 自动检测
 def get_model_dir():
-    """自动检测模型目录路径"""
+    """自动检测模型目录路径（优化部署兼容性）"""
+    # 优先使用相对路径（适应Streamlit Cloud）
     possible_paths = [
-        r'D:\pycharmproject\predict\CHARLS\official\ofi3\saved_models_selected_features',  # 本地开发路径
-        './saved_models_selected_features',  # Streamlit Cloud相对路径
-        'saved_models_selected_features',  # 当前目录
-        os.path.join(os.path.dirname(__file__), 'saved_models_selected_features')  # 脚本同级目录
+        # 移除本地绝对路径，避免部署时干扰
+        os.path.join(".", "saved_models_selected_features"),  # 当前工作目录下的子文件夹
+        os.path.join(os.path.dirname(__file__), "saved_models_selected_features")  # 与app.py同级的文件夹
     ]
 
     for path in possible_paths:
-        if os.path.exists(path):
+        # 检查路径是否存在，且确保是目录
+        if os.path.exists(path) and os.path.isdir(path):
             return path
 
-    # 如果都不存在，返回默认路径并让后续处理
-    return './saved_models_selected_features'
+    # 路径不存在时，返回默认相对路径并提示
+    default_path = os.path.join(".", "saved_models_selected_features")
+    st.warning(f"模型目录未找到，将尝试使用默认路径: {default_path}")
+    return default_path
 
 
 MODEL_DIR = get_model_dir()
