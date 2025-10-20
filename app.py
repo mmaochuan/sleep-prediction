@@ -106,46 +106,46 @@ MODEL_DIR = get_model_dir()
 # 特征标签映射（更新版）
 FEATURE_LABELS = {
     'age': {
-        'label': '年龄',
-        'type': 'number',
-        'min': 45,
+        'label': '年龄', 
+        'type': 'number', 
+        'min': 45, 
         'max': 120,
         'step': 1,
         'is_integer': True
     },
     'gender': {
-        'label': '性别',
+        'label': '性别', 
         'options': {'0': '女性', '1': '男性'}
     },
     'education': {
-        'label': '教育水平',
+        'label': '教育水平', 
         'options': {'1': '低于初中', '2': '高中和职业', '3': '高等教育'}
     },
     'smoke': {
-        'label': '吸烟',
+        'label': '吸烟', 
         'options': {'0': '否', '1': '是'}
     },
     'digeste': {
-        'label': '胃病',
+        'label': '胃病', 
         'options': {'0': '否', '1': '是'}
     },
     'lunge': {
-        'label': '肺病',
+        'label': '肺病', 
         'options': {'0': '否', '1': '是'}
     },
     'arthre': {
-        'label': '关节炎',
+        'label': '关节炎', 
         'options': {'0': '否', '1': '是'}
     },
     'chronum': {
-        'label': '多病共存数量',
-        'type': 'number',
-        'min': 0,
+        'label': '多病共存数量', 
+        'type': 'number', 
+        'min': 0, 
         'max': 14,
         'step': 1,
         'is_integer': True,
         'desc': '''**多病共存包括以下14种疾病：**
-
+        
 1. 高血压
 2. 血脂异常
 3. 糖尿病
@@ -164,9 +164,9 @@ FEATURE_LABELS = {
 **请输入患有上述疾病的总数量（0-14）**'''
     },
     'adl': {
-        'label': 'ADL评分',
-        'type': 'number',
-        'min': 0,
+        'label': 'ADL评分', 
+        'type': 'number', 
+        'min': 0, 
         'max': 6,
         'step': 1,
         'is_integer': True,
@@ -189,9 +189,9 @@ ADL评估6项基本日常生活活动的困难程度：
 **请输入有困难的项目数量（0-6）**'''
     },
     'iadl': {
-        'label': 'IADL评分',
-        'type': 'number',
-        'min': 0,
+        'label': 'IADL评分', 
+        'type': 'number', 
+        'min': 0, 
         'max': 5,
         'step': 1,
         'is_integer': True,
@@ -213,9 +213,9 @@ IADL评估5项工具性日常生活活动的困难程度：
 **请输入有困难的项目数量（0-5）**'''
     },
     'cog': {
-        'label': '认知功能评分',
-        'type': 'number',
-        'min': 0,
+        'label': '认知功能评分', 
+        'type': 'number', 
+        'min': 0, 
         'max': 21,
         'step': 1,
         'is_integer': True,
@@ -223,71 +223,100 @@ IADL评估5项工具性日常生活活动的困难程度：
 
 认知功能总分由两部分组成，满分21分：
 
-**一、精神状态（0-11分）**
-包括：
-- 今天是几号？（年月日，各1分）
-- 今天星期几？（1分）
-- 春夏秋冬现在是什么季节？（1分）
-- 5个物品即时回忆（5分）
-- 100连减7两次（2分）
+**一、精神状态（Mental Status，0-11分）**
 
-**二、情景记忆（0-10分）**
-- 延迟回忆刚才的5个物品（5分）
-- 画图测试（5分）
+1. **时间定向**（共3分）
+   - 今天是几号？（年、月、日各1分）
+   
+2. **时间定向**（1分）
+   - 今天是星期几？
+   
+3. **时间定向**（1分）
+   - 现在是什么季节？（春夏秋冬）
+   
+4. **计算能力**（共5分）
+   - 从100开始，连续减5次7
+   - 即：100-7=93, 93-7=86, 86-7=79, 79-7=72, 72-7=65
+   - 每答对一次得1分，最高5分
+   
+5. **视空间能力**（1分）
+   - 临摹两个重叠的五边形
+   - 能正确画出得1分
 
-**计分方法：**
-- 精神状态分数（0-11分）+ 情景记忆分数（0-10分）
+**二、情景记忆（Episodic Memory，0-10分）**
+
+1. **立即回忆**（Immediate Recall，0-10分）
+   - 访员读10个词（如：苹果、桌子、书等）
+   - 受访者立即回忆
+   - 每记对1个词得1分，最高10分
+   
+2. **延迟回忆**（Delayed Recall，0-10分）
+   - 若干分钟后再次要求回忆同一组词
+   - 每记对1个词得1分，最高10分
+   
+3. **最终得分计算**
+   - 情景记忆得分 =（立即回忆得分 + 延迟回忆得分）÷ 2
+   - 范围：0-10分
+
+**总分计算：**
+- 总分 = 精神状态得分（0-11分）+ 情景记忆得分（0-10分）
 - 总分范围：0-21分
 - **分数越高，认知功能越好**
 
 **请输入总分（0-21）**'''
     },
     'cesd': {
-        'label': 'CESD抑郁评分',
-        'type': 'number',
-        'min': 0,
+        'label': 'CESD抑郁评分', 
+        'type': 'number', 
+        'min': 0, 
         'max': 30,
         'step': 1,
         'is_integer': True,
         'desc': '''**CESD-10抑郁量表评分说明：**
 
-包括10个问题，每题1-4分：
+包括10个问题，评估过去一周的感受：
 
-**1. 我因一些小事而烦恼**
-**2. 我在做事时很难集中精力**
-**3. 我感到情绪低落**
-**4. 我觉得做任何事都很费劲**
-**5. 我对未来充满希望** ⭐（反向题）
-**6. 我感到害怕**
-**7. 我的睡眠不好**
-**8. 我很愉快** ⭐（反向题）
-**9. 我感到孤独**
-**10. 我觉得我无法继续我的生活**
+**评分标准（每题1-4分）：**
+- **1分** = 很少或根本没有（<1天）
+- **2分** = 不太多（1-2天）
+- **3分** = 有时或一半时间（3-4天）
+- **4分** = 大多数时间（5-7天）
 
-**每题计分（过去一周的频率）：**
-- 1分 = 很少或根本没有（<1天）
-- 2分 = 不太多（1-2天）
-- 3分 = 有时或一半时间（3-4天）
-- 4分 = 大多数时间（5-7天）
+**10个问题：**
 
-**注意：** 第5、8题为反向题，需反转计分：
-- 原始1分→3分，2分→2分，3分→1分，4分→0分
+1. **DC009** 我因一些小事而烦恼
+2. **DC010** 我在做事时很难集中精力
+3. **DC011** 我感到情绪低落
+4. **DC012** 我觉得做任何事都很费劲
+5. **DC013** 我对未来充满希望 ⭐（反向题）
+6. **DC014** 我感到害怕
+7. **DC015** 我的睡眠不好
+8. **DC016** 我很愉快 ⭐（反向题）
+9. **DC017** 我感到孤独
+10. **DC018** 我觉得我无法继续我的生活
 
-**抑郁风险水平：**
-- 0-9分：无明显抑郁症状
-- 10-12分：轻度抑郁倾向
-- ≥13分：明显抑郁症状
+**反向题计分（第5题、第8题）：**
+- 原始1分 → 计为3分
+- 原始2分 → 计为2分
+- 原始3分 → 计为1分
+- 原始4分 → 计为0分
 
+**抑郁风险水平判定：**
+- **0-9分**：无明显抑郁症状
+- **10-12分**：轻度抑郁倾向
+- **≥13分**：明显抑郁症状（可能存在抑郁障碍）
+
+**总分范围：0-30分**
 **分数越高，抑郁程度越严重**
 
 **请输入总分（0-30）**'''
     },
     'selfhealth': {
-        'label': '自评健康',
+        'label': '自评健康', 
         'options': {'1': '很差', '2': '差', '3': '一般', '4': '好', '5': '很好'}
     },
     'lonely': {
-        'label': '孤独频率',
+        'label': '孤独频率', 
         'options': {'1': '很少', '2': '有时', '3': '经常', '4': '总是'}
     },
     'lifesat': {
@@ -295,9 +324,9 @@ IADL评估5项工具性日常生活活动的困难程度：
         'options': {'5': '极其满意', '4': '非常满意', '3': '比较满意', '2': '不太满意', '1': '一点也不满意'}
     },
     'hchild': {
-        'label': '健在子女数',
-        'type': 'number',
-        'min': 0,
+        'label': '健在子女数', 
+        'type': 'number', 
+        'min': 0, 
         'max': 20,
         'step': 1,
         'is_integer': True
@@ -408,23 +437,50 @@ def preprocess_input(data, features_info, ordinal_encoder, scaler_cont):
         raise
 
 
+def configure_chinese_fonts():
+    """配置中文字体显示"""
+    import platform
+    import matplotlib.font_manager as fm
+    
+    system = platform.system()
+    
+    # 获取系统可用字体
+    available_fonts = set([f.name for f in fm.fontManager.ttflist])
+    
+    # 定义不同平台的首选字体
+    if system == 'Windows':
+        preferred_fonts = ['Microsoft YaHei', 'SimHei', 'SimSun', 'KaiTi', 'Arial Unicode MS']
+    elif system == 'Darwin':  # macOS
+        preferred_fonts = ['Arial Unicode MS', 'PingFang SC', 'Heiti SC', 'STHeiti']
+    else:  # Linux / Cloud
+        preferred_fonts = [
+            'WenQuanYi Micro Hei', 'WenQuanYi Zen Hei', 'Noto Sans CJK SC',
+            'Droid Sans Fallback', 'AR PL UMing CN', 'Noto Sans SC'
+        ]
+    
+    # 添加通用备选字体
+    preferred_fonts.extend(['DejaVu Sans', 'sans-serif'])
+    
+    # 找到第一个可用的字体
+    for font in preferred_fonts:
+        if font in available_fonts:
+            plt.rcParams['font.sans-serif'] = [font]
+            break
+    else:
+        # 如果都不可用，使用所有备选字体
+        plt.rcParams['font.sans-serif'] = preferred_fonts
+    
+    plt.rcParams['axes.unicode_minus'] = False
+    plt.rcParams['font.family'] = 'sans-serif'
+
+
 def generate_shap_plot(shap_values, feature_values, base_value, features_info):
     """生成SHAP瀑布图（改进中文字体支持）"""
     try:
-        # 设置中文字体（多平台兼容）
-        import platform
-        system = platform.system()
+        # 配置中文字体
+        configure_chinese_fonts()
 
-        if system == 'Windows':
-            plt.rcParams['font.sans-serif'] = ['Microsoft YaHei', 'SimHei', 'Arial Unicode MS']
-        elif system == 'Darwin':  # macOS
-            plt.rcParams['font.sans-serif'] = ['Arial Unicode MS', 'PingFang SC', 'STHeiti']
-        else:  # Linux
-            plt.rcParams['font.sans-serif'] = ['WenQuanYi Micro Hei', 'Droid Sans Fallback', 'DejaVu Sans']
-
-        plt.rcParams['axes.unicode_minus'] = False
-
-        fig, ax = plt.subplots(figsize=(12, 8))
+        fig, ax = plt.subplots(figsize=(12, 8), dpi=100)
 
         feature_names = features_info['selected_features']
         sorted_idx = np.argsort(np.abs(shap_values))[::-1]
@@ -518,7 +574,7 @@ def main():
         2. 点击"开始预测"按钮
         3. 查看风险评估结果
         4. 根据建议采取预防措施
-
+        
         💡 **提示**：点击输入框旁的 ❓ 查看详细说明
         """)
 
@@ -572,27 +628,25 @@ def main():
                     else:
                         min_val = label_info.get('min', 0)
                         max_val = label_info.get('max', 100)
-                        step = label_info.get('step', 1 if label_info.get('is_integer', False) else 0.1)
+                        step = label_info.get('step', 1)
                         desc = label_info.get('desc', '')
+                        is_integer = label_info.get('is_integer', False)
 
                         help_text = desc if desc else None
 
+                        # 使用整数作为默认值和步长
                         value = st.number_input(
                             f"{label}",
-                            min_value=float(min_val),
-                            max_value=float(max_val),
-                            value=float(min_val),
-                            step=float(step),
+                            min_value=int(min_val) if is_integer else float(min_val),
+                            max_value=int(max_val) if is_integer else float(max_val),
+                            value=int(min_val) if is_integer else float(min_val),
+                            step=int(step) if is_integer else float(step),
                             help=help_text,
-                            key=feature,
-                            format="%d" if label_info.get('is_integer', False) else "%.1f"
+                            key=feature
                         )
-
-                        # 确保整数类型
-                        if label_info.get('is_integer', False):
-                            input_data[feature] = int(value)
-                        else:
-                            input_data[feature] = float(value)
+                        
+                        # 存储为float以保持一致性
+                        input_data[feature] = float(value)
 
         # 提交按钮
         submitted = st.form_submit_button("🔮 开始预测", use_container_width=True)
