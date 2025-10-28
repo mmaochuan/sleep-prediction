@@ -138,7 +138,7 @@ FEATURE_LABELS = {
         'options': {'0': 'No', '1': 'Yes'}
     },
     'chronum': {
-        'label': 'Number of Chronic Conditions',
+        'label': 'Number of Comorbid Conditions',
         'type': 'number',
         'min': 0,
         'max': 14,
