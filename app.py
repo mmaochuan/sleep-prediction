@@ -4,7 +4,6 @@ import json
 import numpy as np
 import pandas as pd
 from datetime import datetime
-import pytz
 import os
 import shap
 import matplotlib
@@ -543,18 +542,7 @@ def generate_shap_plot(shap_values, feature_values, base_value, features_info):
         return None
 
 
-def get_current_time():
-    """Get current time in specified timezone"""
-    try:
-        # Use UTC time as default
-        utc_time = datetime.now(pytz.UTC)
-        # Convert to US Pacific Time (or change to your preferred timezone)
-        pacific = pytz.timezone('America/Los_Angeles')
-        local_time = utc_time.astimezone(pacific)
-        return local_time.strftime('%Y-%m-%d %H:%M:%S %Z')
-    except:
-        # Fallback to system time if timezone conversion fails
-        return datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
 
 
 def main():
@@ -768,7 +756,7 @@ def main():
                     st.write("**Input Data:**")
                     st.json(input_data)
                     st.write(f"**Prediction Probability:** {probability:.4f}")
-                    st.write(f"**Prediction Time:** {get_current_time()}")
+
 
             except Exception as e:
                 st.error(f"❌ Prediction failed: {str(e)}")
